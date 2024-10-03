@@ -1,0 +1,21 @@
+# Ignorar o ambiente virtual do Python
+venv/
+
+# Ignorar pastas de resultados e PDFs
+backend/pdfs/
+backend/results/
+
+# Ignorar arquivos de configuração do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos de cache do Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignorar arquivos do sistema de controle de versão
+.git/
