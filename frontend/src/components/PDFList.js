@@ -15,6 +15,6 @@ const PDFList = ({ pdfs }) => {
       </ul>
     </div>
   );
-}
+};
 
 export default PDFList;

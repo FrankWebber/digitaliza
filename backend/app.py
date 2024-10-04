@@ -1,18 +1,24 @@
 from flask import Flask, jsonify, request
 from ocr_processor import process_ocr
 import os
+import boto3
+from flask_cors import CORS  # Importa o CORS
 
 app = Flask(__name__)
+CORS(app)  # Habilita o CORS para todas as rotas
 
 # Diretório para armazenar PDFs
 UPLOAD_FOLDER = os.path.join(os.getcwd(), '../pdfs')
-RESULTS_FOLDER = os.path.join(os.getcwd(), '../results')  # Novo diretório para resultados
+RESULTS_FOLDER = os.path.join(os.getcwd(), '../results')
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 if not os.path.exists(RESULTS_FOLDER):
     os.makedirs(RESULTS_FOLDER)
+
+# Bucket S3
+S3_BUCKET_NAME = 'bucketparaocrlaudos'  # Substitua pelo nome do seu bucket S3
 
 # Lista de PDFs monitorados e seus status
 pdf_files = {}
@@ -29,12 +35,13 @@ def upload_pdf():
     if file and file.filename.endswith('.pdf'):
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
-        pdf_files[file.filename] = {'status': 'Em processamento', 'path': filepath}
-        
-        # Processar OCR e salvar resultado na pasta results
-        result_path = os.path.join(RESULTS_FOLDER, file.filename)
-        process_ocr(filepath, result_path)  # Passar o caminho do resultado
-        pdf_files[file.filename]['status'] = 'Concluído'
+
+        # Enviar para o bucket S3
+        s3_client = boto3.client('s3')
+        s3_client.upload_file(filepath, S3_BUCKET_NAME, file.filename)
+
+        # Processar OCR no PDF do S3
+        process_ocr(file.filename)  # Passar o nome do arquivo para o processamento OCR
         return jsonify({'message': 'PDF enviado e OCR iniciado', 'file': file.filename}), 200
 
     return jsonify({'error': 'Arquivo inválido'}), 400
