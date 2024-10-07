@@ -1,7 +1,7 @@
 import React from 'react';
-import PDFDetails from './PDFDetails';
+import OCRButton from './OCRButton'; // Importa o OCRButton para cada PDF
 
-const PDFList = ({ pdfs }) => {
+const PDFList = ({ pdfs, onSelectPdf }) => {
   return (
     <div>
       <h2>Lista de PDFs Digitalizados</h2>
@@ -9,7 +9,7 @@ const PDFList = ({ pdfs }) => {
         {pdfs.map((pdf, index) => (
           <li key={index}>
             <p>{pdf.filename} - {pdf.status}</p>
-            <PDFDetails filename={pdf.filename} />
+            <OCRButton filename={pdf.filename} onOCR={onSelectPdf} />
           </li>
         ))}
       </ul>

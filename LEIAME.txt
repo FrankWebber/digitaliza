@@ -1,0 +1,55 @@
+# Digita-Lisa
+
+O **Digita-Lisa** é um sistema de digitalização e extração de informações automatizadas de documentos com integração ao Amazon Textract, projetado para auxiliar a Junta Médica Pericial do Amazonas a processar laudos médicos e outros documentos.
+
+## Funcionalidades
+
+- Extração de texto, tabelas e formulários de documentos digitalizados.
+- Suporte a múltiplas páginas e diferentes tipos de documentos (PDF, imagens, etc).
+- Automação do reconhecimento de manuscritos, assinaturas e campos de valor-chave.
+- Integração com o Amazon S3 para armazenamento de documentos processados.
+
+## Pré-requisitos
+
+- Conta AWS ativa com permissões para utilizar o **Amazon Textract** e **Amazon S3**.
+- Node.js e npm instalados localmente.
+
+## Instalação
+
+1. Clone o repositório:
+
+    ```bash
+    git clone https://github.com/seuprojeto/digita-lisa.git
+    ```
+
+2. Navegue até o diretório do projeto:
+
+    ```bash
+    cd digita-lisa
+    ```
+
+3. Instale as dependências do projeto:
+
+    ```bash
+    npm install
+    ```
+
+4. Configure as variáveis de ambiente no arquivo `.env` (ver instruções abaixo).
+
+5. Execute o projeto localmente:
+
+    ```bash
+    npm start
+    ```
+
+## Configuração do .env
+
+O arquivo `.env` precisa ser configurado com as credenciais AWS e informações do bucket S3. Veja a seção de variáveis de ambiente para mais detalhes.
+
+### Exemplo de configuração `.env`:
+
+```bash
+AWS_ACCESS_KEY_ID=AKIAX6UI6HHM6PW3XSHS
+AWS_SECRET_ACCESS_KEY=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
+AWS_REGION=us-west-2
+S3_BUCKET_NAME=digita-lisa
