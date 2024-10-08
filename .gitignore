@@ -50,4 +50,8 @@ Dockerfile*
 # Ignorar a pasta 'stuff'
 stuff/
 
+# Ignorar o arquivo BFG
+bfg.jar
 
+# Ignorar a pasta node_modules
+node_modules/
