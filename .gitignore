@@ -6,7 +6,22 @@
 venv/
 backend/venv/
 
+# Ignorar cache do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar arquivos de banco de dados
+*.sqlite
+*.db
+
+# Ignorar pastas de logs
+logs/
+backend/logs/
+
 # Ignorar pastas de resultados e PDFs
+pdfs/
+results/
 backend/pdfs/
 backend/results/
 
@@ -16,11 +31,11 @@ stuff/
 # Ignorar arquivos temporários e de cache
 *.tmp
 *.temp
+*.log
 *.swp
 *.swo
-*.DS_Store
+.DS_Store
 *.thumb
-*.log
 
 # Ignorar arquivos de backup
 *~
@@ -31,8 +46,6 @@ stuff/
 # Ignorar builds e distribuições
 dist/
 build/
-*.pyc
-__pycache__/
 *.class
 *.o
 
@@ -40,17 +53,10 @@ __pycache__/
 *.egg
 *.egg-info/
 *.pyd
-*.pyo
 
-# Ignorar arquivos de banco de dados
-*.sqlite
-*.db
-
-# Ignorar pacotes do sistema e arquivos gerados
-*.tar
-*.zip
-*.rar
-*.gz
+# Ignorar a pasta node_modules
+node_modules/
+frontend/node_modules/
 
 # Ignorar arquivos de configuração de IDEs
 .vscode/
@@ -62,12 +68,12 @@ __pycache__/
 Dockerfile*
 docker-compose.yml
 *.tar
+*.zip
+*.rar
+*.gz
 
-# Ignorar o arquivo BFG
+# Ignorar artefatos do BFG Repo-Cleaner
 bfg.jar
-
-# Ignorar a pasta node_modules
-node_modules/
 
 # Ignorar dependências de logs ou erros do Git
 .git/lfs/objects
