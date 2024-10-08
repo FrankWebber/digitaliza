@@ -1,5 +1,6 @@
 # Ignorar arquivos de ambiente
 .env
+*.env
 
 # Ignorar ambiente virtual do Python
 venv/
@@ -12,20 +13,44 @@ backend/results/
 # Ignorar a pasta 'stuff'
 stuff/
 
-# Ignorar arquivos temporários
+# Ignorar arquivos temporários e de cache
 *.tmp
 *.temp
-
-# Ignorar arquivos de log de aplicações
+*.swp
+*.swo
+*.DS_Store
+*.thumb
 *.log
-
-# Ignorar arquivos de builds e distribuições
-dist/
-build/
 
 # Ignorar arquivos de backup
 *~
 *.bak
+*.old
+*.orig
+
+# Ignorar builds e distribuições
+dist/
+build/
+*.pyc
+__pycache__/
+*.class
+*.o
+
+# Ignorar arquivos de pacotes Python
+*.egg
+*.egg-info/
+*.pyd
+*.pyo
+
+# Ignorar arquivos de banco de dados
+*.sqlite
+*.db
+
+# Ignorar pacotes do sistema e arquivos gerados
+*.tar
+*.zip
+*.rar
+*.gz
 
 # Ignorar arquivos de configuração de IDEs
 .vscode/
@@ -34,24 +59,16 @@ build/
 *.sublime-workspace
 
 # Ignorar artefatos do Docker
-*.tar
-*.zip
 Dockerfile*
-
-# Ignorar arquivos de dados
-*.sqlite
-*.db
-
-# Ignorar arquivos de pacotes do sistema
-*.egg
-*.egg-info/
-
-
-# Ignorar a pasta 'stuff'
-stuff/
+docker-compose.yml
+*.tar
 
 # Ignorar o arquivo BFG
 bfg.jar
 
 # Ignorar a pasta node_modules
 node_modules/
+
+# Ignorar dependências de logs ou erros do Git
+.git/lfs/objects
+*.lock
