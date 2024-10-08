@@ -1,21 +1,53 @@
-# Ignorar o ambiente virtual do Python
+# Ignorar arquivos de ambiente
+.env
+
+# Ignorar ambiente virtual do Python
 venv/
+backend/venv/
 
 # Ignorar pastas de resultados e PDFs
 backend/pdfs/
 backend/results/
 
-# Ignorar arquivos de configuração do sistema
-.DS_Store
-Thumbs.db
+# Ignorar a pasta 'stuff'
+stuff/
 
-# Ignorar arquivos de log
+# Ignorar arquivos temporários
+*.tmp
+*.temp
+
+# Ignorar arquivos de log de aplicações
 *.log
 
-# Ignorar arquivos de cache do Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
+# Ignorar arquivos de builds e distribuições
+dist/
+build/
 
-# Ignorar arquivos do sistema de controle de versão
-.git/
+# Ignorar arquivos de backup
+*~
+*.bak
+
+# Ignorar arquivos de configuração de IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignorar artefatos do Docker
+*.tar
+*.zip
+Dockerfile*
+
+# Ignorar arquivos de dados
+*.sqlite
+*.db
+
+# Ignorar arquivos de pacotes do sistema
+*.egg
+*.egg-info/
+
+
+# Ignorar a pasta 'stuff'
+stuff/
+
+
