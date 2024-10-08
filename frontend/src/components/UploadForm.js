@@ -1,62 +1,84 @@
 import React, { useState } from 'react';
 
-function UploadForm({ onUploadSuccess }) {
-  const [file, setFile] = useState(null);  // Estado para armazenar o arquivo selecionado
-  const [isUploading, setIsUploading] = useState(false);  // Estado para controlar o status de upload
+function UploadForm({ onUploadSuccess, setJobId, setFilename, setTxtFilePath }) {
+    const [file, setFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);  // Atualiza o estado com o arquivo selecionado
-  };
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];  // Captura o primeiro arquivo selecionado
+        console.log('Arquivo selecionado:', selectedFile);  // Adiciona o log aqui para depuração
+        setFile(selectedFile);  // Atualiza o estado com o arquivo selecionado
+    };
 
-  const handleUpload = async (event) => {
-    event.preventDefault();
+    const handleUpload = async (event) => {
+        event.preventDefault();
 
-    if (!file) {
-      alert('Por favor, selecione um arquivo para upload.');
-      return;
-    }
+        if (!file) {
+            alert('Por favor, selecione um arquivo para upload.');
+            return;
+        }
 
-    const formData = new FormData();
-    formData.append('file', file);
+        const formData = new FormData();
+        formData.append('file', file);  // Adiciona o arquivo ao FormData
 
-    setIsUploading(true);  // Inicia o processo de upload (mostrar indicador, desabilitar botão, etc.)
+        console.log('FormData pronto:', formData.get('file')); // Log para depuração
 
-    try {
-      const response = await fetch('http://127.0.0.1:5000/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        setIsUploading(true);  // Inicia o processo de upload
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao fazer upload do arquivo.');
-      }
+        try {
+            const response = await fetch('http://127.0.0.1:5000/upload', {
+                method: 'POST',
+                body: formData,
+            });
 
-      alert('Arquivo enviado com sucesso!');
-      setFile(null);  // Limpa o arquivo selecionado após o upload
-      if (onUploadSuccess) {
-        onUploadSuccess();  // Atualiza a lista de PDFs após o upload
-      }
-    } catch (error) {
-      alert(`Erro ao enviar arquivo: ${error.message}`);
-    } finally {
-      setIsUploading(false);  // Finaliza o processo de upload (remover indicador, habilitar botão, etc.)
-    }
-  };
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erro ao fazer upload do arquivo.');
+            }
 
-  return (
-    <form onSubmit={handleUpload}>
-      <input
-        type="file"
-        accept=".pdf"  // Limita a seleção apenas para arquivos PDF
-        onChange={handleFileChange}
-        disabled={isUploading}  // Desabilita o input durante o upload
-      />
-      <button type="submit" disabled={isUploading}>
-        {isUploading ? 'Enviando...' : 'Enviar PDF'}
-      </button>
-    </form>
-  );
+            const data = await response.json();
+            alert('Arquivo enviado com sucesso!');
+            setJobId(data.jobId);  // Atualiza o jobId
+            setFilename(file.name); // Atualiza o filename
+            setFile(null);  // Limpa o arquivo selecionado após o upload
+            
+            // Verifica o status do OCR automaticamente
+            const statusResponse = await fetch(`http://127.0.0.1:5000/ocr-status/${data.jobId}`, {
+                method: 'GET',
+            });
+
+            if (statusResponse.ok) {
+                const { status, txt_path } = await statusResponse.json();
+                if (txt_path) {
+                    setTxtFilePath(txt_path); // Armazena o caminho do arquivo txt
+                }
+                console.log(`Arquivo TXT salvo em: ${txt_path}`); // Log do caminho do arquivo
+            }
+
+            // Chama a função de sucesso
+            if (onUploadSuccess) {
+                onUploadSuccess();  // Atualiza a lista de PDFs após o upload
+            }
+        } catch (error) {
+            alert(`Erro ao enviar arquivo: ${error.message}`);  // Mensagem de erro
+        } finally {
+            setIsUploading(false);  // Finaliza o processo de upload
+        }
+    };
+
+    return (
+        <form onSubmit={handleUpload}>
+            <input
+                type="file"
+                accept=".pdf"  // Limita a seleção apenas para arquivos PDF
+                onChange={handleFileChange}
+                disabled={isUploading}  // Desabilita o input durante o upload
+            />
+            <button type="submit" disabled={isUploading}>
+                {isUploading ? 'Enviando...' : 'Enviar PDF'}
+            </button>
+        </form>
+    );
 }
 
 export default UploadForm;

@@ -1,0 +1,23 @@
+# Usar uma imagem base do Node.js
+FROM node:18-alpine
+
+# Definir o diretório de trabalho no container
+WORKDIR /app
+
+# Copiar o arquivo de dependências do frontend
+COPY frontend/package.json frontend/package-lock.json ./
+
+# Instalar as dependências
+RUN npm install
+
+# Copiar o restante dos arquivos do frontend para o container
+COPY frontend/ .
+
+# Build do projeto React
+RUN npm run build
+
+# Expor a porta do servidor de desenvolvimento do React (3000)
+EXPOSE 3000
+
+# Comando para iniciar a aplicação React
+CMD ["npm", "start"]

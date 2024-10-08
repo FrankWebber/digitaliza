@@ -1,49 +1,49 @@
-import React, { useState, useEffect } from 'react'; 
-import PDFList from './components/PDFList';         // Importa o componente para listar PDFs
-import UploadForm from './components/UploadForm';     // Importa o componente de upload de arquivos
-import PDFDetails from './components/PDFDetails';     // Importa o componente para mostrar detalhes do PDF
-import DownloadText from './components/DownloadText'; // Importa o componente para download de texto (se aplicável)
-import OCRButton from './components/OCRButton';       // Importa o componente para realizar OCR (se aplicável)
-import Relatorio from './components/Relatorio';       // Importa o componente para gerar relatórios (se aplicável)
-import './App.css';                                   // Importa os estilos
+import React, { useState, useEffect } from 'react';
+import PDFList from './components/PDFList';
+import UploadForm from './components/UploadForm';
+import PDFDetails from './components/PDFDetails';
+import ConsoleOutput from './components/ConsoleOutput'; // Importa o ConsoleOutput
+import './App.css';
 
 function App() {
-  const [pdfs, setPdfs] = useState([]);              // Estado para armazenar a lista de PDFs
-  const [selectedPdf, setSelectedPdf] = useState(null); // Estado para armazenar o PDF selecionado
+  const [pdfs, setPdfs] = useState([]);
+  const [selectedPdf, setSelectedPdf] = useState(null);
+  const [jobId, setJobId] = useState(null);
+  const [filename, setFilename] = useState(null);
+  const [txtFilePath, setTxtFilePath] = useState(null); // Para armazenar o caminho do arquivo .txt
 
-  // Função para buscar a lista de PDFs
   const fetchPDFs = async () => {
     try {
-      const response = await fetch('http://localhost:5000/status'); // Faz a requisição ao backend
+      const response = await fetch('http://localhost:5000/status');
       if (!response.ok) {
-        throw new Error('Erro ao buscar o status dos PDFs'); // Lida com erros de resposta
+        throw new Error('Erro ao buscar o status dos PDFs');
       }
       const data = await response.json();
-      // Transforma a resposta em uma lista de objetos com filename e status
       const pdfList = Object.keys(data).map(key => ({ filename: key, status: data[key].status }));
-      setPdfs(pdfList); // Atualiza o estado com a lista de PDFs
+      setPdfs(pdfList);
     } catch (error) {
-      console.error('Error fetching PDF status:', error); // Loga o erro no console
+      console.error('Error fetching PDF status:', error);
+      alert("Ocorreu um erro ao buscar o status dos PDFs. Verifique se o backend está funcionando.");
     }
   };
 
-  // useEffect para buscar os PDFs ao carregar o componente
   useEffect(() => {
-    fetchPDFs(); // Chama a função fetchPDFs ao montar o componente
-  }, []); // O array vazio faz com que o fetch ocorra apenas uma vez, ao montar o componente
+    fetchPDFs();
+  }, []);
 
   return (
     <div className="App">
-      <h1>DigitalizaLaudos</h1> // Título do aplicativo
-      <UploadForm onUploadSuccess={fetchPDFs} /> {/* Formulário de upload */}
-      <PDFList pdfs={pdfs} onSelectPdf={setSelectedPdf} /> {/* Lista de PDFs */}
-      {selectedPdf && (  // Exibe os detalhes do PDF selecionado
-        <PDFDetails filename={selectedPdf.filename} />
-      )}
-      {/* Se você estiver utilizando DownloadText, OCRButton ou Relatorio, adicione-os aqui */}
-      {/* <DownloadText /> */}
-      {/* <OCRButton /> */}
-      {/* <Relatorio /> */}
+      <h1>DigitalizaLaudos</h1>
+      <UploadForm 
+        onUploadSuccess={fetchPDFs} 
+        setJobId={setJobId} 
+        setFilename={setFilename} 
+        setTxtFilePath={setTxtFilePath} // Não esqueça de passar isso
+      />
+      <PDFList pdfs={pdfs} onSelectPdf={setSelectedPdf} />
+      {selectedPdf && <PDFDetails filename={selectedPdf.filename} />}
+      {txtFilePath && <p>Arquivo TXT salvo em: {txtFilePath}</p>} {/* Exibe o caminho do arquivo txt */}
+      <ConsoleOutput jobId={jobId} filename={filename} /> {/* Adiciona o ConsoleOutput */}
     </div>
   );
 }

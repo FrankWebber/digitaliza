@@ -1,59 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ConsoleOutput = () => {
-    const [messages, setMessages] = useState([]);
+const Relatorio = () => {
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const addMessage = (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-    };
+  // Função para buscar logs do backend
+  const fetchLogs = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://127.0.0.1:5000/logs'); // Endpoint que você precisa implementar no backend
+      if (!response.ok) {
+        throw new Error('Erro ao buscar logs do servidor');
+      }
+      const data = await response.json();
+      setLogs(data.logs || []);
+    } catch (error) {
+      console.error('Erro ao buscar logs:', error);
+      setLogs(['Erro ao buscar logs']);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleUpload = async (file) => {
-        addMessage("Iniciando o upload do arquivo para o bucket S3...");
+  useEffect(() => {
+    fetchLogs();
+    const interval = setInterval(fetchLogs, 1000); // Atualiza os logs a cada 1 segundos
+    return () => clearInterval(interval);
+  }, []);
 
-        // Simular upload para S3
-        try {
-            await uploadFileToS3(file);
-            addMessage(`Upload do arquivo ${file.name} concluído.`);
-        } catch (error) {
-            addMessage("Ocorreu um erro durante o upload. Tente novamente.");
-            return;
-        }
-
-        addMessage(`Iniciando o processamento OCR para o arquivo ${file.name}...`);
-        
-        // Simular processamento OCR
-        try {
-            await processOCR(file.name);
-            addMessage(`Processamento OCR concluído para o arquivo ${file.name}.`);
-            addMessage(`O arquivo ${file.name} foi convertido com sucesso para TXT. Faça o download agora!`);
-        } catch (error) {
-            addMessage(`Erro ao processar o arquivo ${file.name}. Verifique se o arquivo é um PDF válido.`);
-        }
-    };
-
-    const uploadFileToS3 = (file) => {
-        return new Promise((resolve) => {
-            setTimeout(resolve, 2000); // Simulando um atraso de 2 segundos
-        });
-    };
-
-    const processOCR = (filename) => {
-        return new Promise((resolve) => {
-            setTimeout(resolve, 3000); // Simulando um atraso de 3 segundos
-        });
-    };
-
-    return (
-        <div style={{ background: '#1e1e1e', color: '#ffffff', padding: '20px', borderRadius: '5px', height: '300px', overflowY: 'scroll' }}>
-            <h3>Console Output</h3>
-            <div>
-                {messages.map((msg, index) => (
-                    <div key={index}>{msg}</div>
-                ))}
-            </div>
-            <button onClick={() => handleUpload({ name: 'example.pdf' })}>Iniciar Processamento</button>
-        </div>
-    );
+  return (
+    <div>
+      <h3>Relatório de Atividades do Backend</h3>
+      {loading ? (
+        <p>Carregando logs...</p>
+      ) : (
+        <ul>
+          {logs.map((log, index) => (
+            <li key={index}>{log}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
-export default ConsoleOutput;
+export default Relatorio;
