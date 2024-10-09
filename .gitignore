@@ -78,3 +78,6 @@ bfg.jar
 # Ignorar dependências de logs ou erros do Git
 .git/lfs/objects
 *.lock
+
+# Ignorar arquivos da pasta results
+results/
