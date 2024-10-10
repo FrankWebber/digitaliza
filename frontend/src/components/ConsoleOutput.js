@@ -1,9 +1,7 @@
-// src/components/ConsoleOutput.js
 import React, { useState, useEffect } from 'react';
 
 const ConsoleOutput = ({ jobId, filename }) => {
   const [messages, setMessages] = useState([]);
-  const [uploading, setUploading] = useState(false);
   const [ocrStatus, setOcrStatus] = useState(null);
 
   useEffect(() => {
@@ -51,7 +49,6 @@ const ConsoleOutput = ({ jobId, filename }) => {
           <div key={index}>{msg}</div>
         ))}
       </div>
-      {uploading && <p>Upload em andamento...</p>}
       {filename && <p>Arquivo: {filename}</p>}
       {ocrStatus && <p>Status do OCR: {ocrStatus}</p>}
     </div>
