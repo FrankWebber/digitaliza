@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-function UploadForm({ onUploadSuccess, setJobId, setFilename, setTxtFilePath }) {
+function UploadForm({ onUploadSuccess, setFilename, setTxtFilePath }) {
     const [file, setFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];  // Captura o primeiro arquivo selecionado
-        console.log('Arquivo selecionado:', selectedFile);  // Adiciona o log aqui para depuração
+        console.log('Arquivo selecionado:', selectedFile);  // Log para depuração
         setFile(selectedFile);  // Atualiza o estado com o arquivo selecionado
     };
 
@@ -38,7 +38,6 @@ function UploadForm({ onUploadSuccess, setJobId, setFilename, setTxtFilePath }) 
 
             const data = await response.json();
             alert('Arquivo enviado com sucesso!');
-            setJobId(data.jobId);  // Atualiza o jobId
             setFilename(file.name); // Atualiza o filename
             setFile(null);  // Limpa o arquivo selecionado após o upload
             
@@ -48,7 +47,7 @@ function UploadForm({ onUploadSuccess, setJobId, setFilename, setTxtFilePath }) 
             });
 
             if (statusResponse.ok) {
-                const { status, txt_path } = await statusResponse.json();
+                const { txt_path } = await statusResponse.json();
                 if (txt_path) {
                     setTxtFilePath(txt_path); // Armazena o caminho do arquivo txt
                 }
