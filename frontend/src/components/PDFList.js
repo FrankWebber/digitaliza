@@ -6,8 +6,8 @@ const PDFList = ({ pdfs, onSelectPdf, setTxtFilePath }) => { // Inclua setTxtFil
     <div>
       <h2>Lista de PDFs Digitalizados</h2>
       <ul>
-        {pdfs.map((pdf, index) => (
-          <li key={index}>
+        {pdfs.map((pdf) => (
+          <li key={pdf.filename}> {/* Use filename como chave se for única */}
             <p>{pdf.filename} - {pdf.status}</p>
             {/* Passa filename e outras props necessárias para o OCRButton */}
             <OCRButton 

@@ -1,4 +1,5 @@
 import os
+<<<<<<< HEAD
 import logging
 import sys
 import traceback
@@ -6,6 +7,24 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import boto3
+=======
+import time
+import boto3
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from pdf2image import convert_from_path
+import pytesseract
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv('.env')
+
+# Initialize AWS credentials and parameters
+aws_access_key = os.getenv('AWS_ACCESS_KEY_ID')
+aws_secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+region = os.getenv('AWS_REGION')
+bucket_name = os.getenv('S3_BUCKET_NAME')
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)
 
 # Adiciona o diretório pai ao sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -35,6 +54,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)  # Habilita CORS para permitir requisições de outros domínios
 
+<<<<<<< HEAD
 # Middleware para registrar erros
 @app.errorhandler(Exception)
 def handle_error(error):
@@ -67,10 +87,20 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 
 # Nome do bucket S3
 S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+=======
+# Enable CORS for all routes
+CORS(app)
 
-# Lista de PDFs monitorados e seus status
+UPLOAD_FOLDER = r'C:\Users\43803016215\Documents\GitHub\digitalizalaudo\pdfs'
+RESULTS_FOLDER = r'C:\Users\43803016215\Documents\GitHub\digitalizalaudo\results'
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(RESULTS_FOLDER, exist_ok=True)
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)
+
 pdf_files = {}
 
+<<<<<<< HEAD
 # Defina um limite para o tamanho do arquivo
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 
@@ -138,6 +168,55 @@ def get_status(filename):
         return jsonify({'error': 'Error checking job status'}), 500
     
     return jsonify(pdf_files[filename]), 200
+=======
+def process_pdf(filepath):
+    result_path = os.path.join(RESULTS_FOLDER, os.path.basename(filepath)[:-4])  # Removes the .pdf extension
+    try:
+        # Process with AWS Textract
+        process_ocr(filepath, result_path)
+        return True
+    except Exception as e:
+        print(f"Error processing with Textract: {e}")
+
+    # If Textract fails, try with pytesseract
+    try:
+        images = convert_from_path(filepath)  # Convert PDF to images
+        with open(f"{result_path}.txt", "w", encoding='utf-8') as f:
+            for image in images:
+                text = pytesseract.image_to_string(image, lang='por')  # Use Portuguese language
+                f.write(text)
+                f.write("\n" + "-" * 50 + "\n")  # Separator between pages
+        return True
+    except Exception as e:
+        print(f"Error processing with Tesseract: {e}")
+        return False
+
+@app.route('/upload', methods=['POST'])
+def upload_pdf():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    if file and file.filename.endswith('.pdf'):
+        filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(filepath)
+        pdf_files[file.filename] = {'status': 'Processing', 'path': filepath}
+
+        try:
+            if process_pdf(filepath):  # Process the PDF
+                pdf_files[file.filename]['status'] = 'Completed'
+                return jsonify({'message': 'PDF uploaded and processing started', 'file': file.filename}), 200
+            else:
+                return jsonify({'error': 'Error processing the PDF'}), 500
+        except Exception as e:
+            return jsonify({'error': f'An error occurred during processing: {str(e)}'}), 500
+
+    return jsonify({'error': 'Invalid file type, only PDFs are accepted'}), 400
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)
 
 @app.route('/status', methods=['GET'])
 def get_all_status():
@@ -145,6 +224,7 @@ def get_all_status():
 
 @app.route('/pdf/<filename>', methods=['GET'])
 def get_pdf_data(filename):
+<<<<<<< HEAD
     txt_file_path = os.path.join(RESULTS_FOLDER, f'MEMO_N_{filename}.txt')
     if os.path.exists(txt_file_path):
         return send_from_directory(RESULTS_FOLDER, f'MEMO_N_{filename}.txt'), 200
@@ -210,3 +290,76 @@ def get_logs():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
+=======
+    if filename in pdf_files:
+        txt_file_path = os.path.join(RESULTS_FOLDER, f'{filename[:-4]}.txt')
+        if os.path.exists(txt_file_path):
+            with open(txt_file_path, 'r', encoding='utf-8') as file:
+                data = file.read()
+            return jsonify({'file': filename, 'data': data}), 200
+        return jsonify({'error': 'Text file not found'}), 404
+    return jsonify({'error': 'File not found'}), 404
+
+def upload_file_to_s3(file_path):
+    s3_client = boto3.client('s3', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key, region_name=region)
+    try:
+        s3_client.upload_file(file_path, bucket_name, os.path.basename(file_path))
+        print(f"Arquivo {file_path} carregado com sucesso para {bucket_name}.")
+    except Exception as e:
+        print(f"Erro ao carregar arquivo para S3: {str(e)}")
+
+def check_job_status(job_id):
+    client = boto3.client('textract', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key, region_name=region)
+    
+    while True:
+        response = client.get_document_text_detection(JobId=job_id)
+        status = response['JobStatus']
+        
+        if status == 'SUCCEEDED':
+            print('Job completed successfully')
+            return response['Blocks']
+        elif status in ['FAILED', 'PARTIAL_SUCCESS']:
+            print(f'Job failed with status: {status}')
+            return None
+
+        print('Job still in progress...')
+        time.sleep(5)
+
+def process_ocr(pdf_path, result_path):
+    client = boto3.client('textract', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key, region_name=region)
+
+    # Upload the file to S3
+    upload_file_to_s3(pdf_path)
+
+    try:
+        # Start Textract job
+        response = client.start_document_text_detection(
+            DocumentLocation={
+                'S3Object': {
+                    'Bucket': bucket_name,
+                    'Name': os.path.basename(pdf_path)
+                }
+            }
+        )
+
+        job_id = response['JobId']
+        print(f"Document analysis started with Job ID: {job_id}")
+
+        # Check job status
+        blocks = check_job_status(job_id)
+        
+        if blocks:
+            extracted_text = "\n".join([block['Text'] for block in blocks if block['BlockType'] == 'LINE'])
+            txt_output_path = f'{result_path}.txt'
+            with open(txt_output_path, 'w', encoding='utf-8') as output_file:
+                output_file.write(extracted_text)
+            print(f'Texto extraído salvo em: {txt_output_path}')
+        else:
+            print('Nenhum texto extraído.')
+
+    except Exception as e:
+        print(f'Erro ao processar OCR: {str(e)}')
+
+if __name__ == '__main__':
+    app.run(debug=True)  # Run the Flask app in debug mode
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)

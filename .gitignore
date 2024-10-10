@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignorar arquivos de ambiente
 .env
 *.env
@@ -22,9 +23,19 @@ backend/logs/
 # Ignorar pastas de resultados e PDFs
 pdfs/
 results/
-backend/pdfs/
-backend/results/
+=======
+# Ignorar arquivos .txt gerados
+digitaliza_*.txt
 
+# Ignorar diretório backend e seus arquivos
+backend/
+backend/venv/
+backend/__pycache__/
+backend/.env
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)
+backend/pdfs/
+
+<<<<<<< HEAD
 # Ignorar a pasta 'stuff'
 stuff/
 
@@ -81,3 +92,21 @@ bfg.jar
 
 # Ignorar arquivos da pasta results
 results/
+=======
+# Ignorar diretório frontend e seus arquivos
+frontend/
+frontend/node_modules/
+frontend/public/
+
+# Ignorar arquivos Python específicos
+versiofronbackend.py
+versiofrontend.py
+
+# Ignorar diretório de resultados e PDFs
+results/
+pdfs/
+
+# Ignorar arquivos de configuração Git
+.git/
+.gitignore
+>>>>>>> 6d679a4 (Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs)
