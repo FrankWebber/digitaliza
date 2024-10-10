@@ -69,8 +69,7 @@ const UploadForm = ({ onUploadSuccess, setJobId, setFilename }) => {
 
 // Componente OCRButton para processar OCR
 const OCRButton = ({ file, onOCR, setTxtFilePath }) => { 
-    const [jobId, setJobId] = useState(null);
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState(null); // Mantemos o status, pois ele é utilizado
 
     const handleClick = async () => {
         console.log('Arquivo enviado:', file);
@@ -88,8 +87,7 @@ const OCRButton = ({ file, onOCR, setTxtFilePath }) => {
                 throw new Error('Erro ao iniciar o OCR');
             }
 
-            const { jobId: newJobId } = await startResponse.json();
-            setJobId(newJobId);
+            const { jobId: newJobId } = await startResponse.json(); // Ainda usamos jobId aqui, mas não precisamos armazená-lo no estado
 
             const statusInterval = setInterval(async () => {
                 const statusResponse = await fetch(`http://127.0.0.1:5000/ocr-status/${newJobId}`, {
