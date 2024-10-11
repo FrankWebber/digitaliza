@@ -1,20 +1,15 @@
 import os
-<<<<<<< HEAD
 import logging
 import sys
 import traceback
+import boto3
+import time
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
-import boto3
-=======
-import time
-import boto3
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 from pdf2image import convert_from_path
 import pytesseract
-from dotenv import load_dotenv
+
 
 # Load environment variables
 load_dotenv('.env')

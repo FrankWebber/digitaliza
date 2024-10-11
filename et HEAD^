@@ -1,0 +1,21 @@
+[33m2980210[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m Atualizações no backend e frontend, incluindo ajustes no processamento OCR e upload de PDFs
+[33m3254f0a[m[33m ([m[1;31morigin/master[m[33m)[m Update UploadForm.js
+[33m8b79907[m Update OCRButton.js
+[33m47c820f[m Update ConsoleOutput.js
+[33md9675ae[m para primeiro deploy
+[33m4103f1d[m Update requirements.txt
+[33m1a7fef6[m Update requirements.txt
+[33ma61608e[m Update requirements.txt
+[33m1a8412f[m Create heroku.yml
+[33m427c5a1[m Atualiza .gitignore para ignorar arquivos da pasta results
+[33m00ce01d[m Atualiza .gitignore para ignorar arquivos desnecessários
+[33mf08a2f7[m Remove AWS keys from history
+[33mc5521a3[m Atualizando .gitignore e removendo node_modules do rastreamento
+[33m41c4354[m Adicionando arquivo grande ao Git LFS
+[33m8f43dc8[m Atualizando .gitignore para remover entradas duplicadas
+[33me127535[m Removendo a pasta 'stuff' do controle de versão e atualizando .gitignore
+[33md7fb65b[m Descrição das alterações que você fez
+[33m9dfe895[m Adiciona todas as alterações e atualizações do projeto digita-liza
+[33mab51e84[m Adiciona todas as alterações e atualizações do projeto
+[33m1eaf43a[m Descrição das alterações que você fez
+[33md4c7830[m Adicionando arquivos do projeto digitalizalaudos

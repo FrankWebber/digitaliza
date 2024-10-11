@@ -48,8 +48,5 @@ O arquivo `.env` precisa ser configurado com as credenciais AWS e informações 
 
 ### Exemplo de configuração `.env`:
 
-```bash
-AWS_ACCESS_KEY_ID=AKIAX6UI6HHM6PW3XSHS
-AWS_SECRET_ACCESS_KEY=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
-AWS_REGION=us-west-2
-S3_BUCKET_NAME=digita-lisa
+
+
